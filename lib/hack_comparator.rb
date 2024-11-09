@@ -7,7 +7,7 @@ module HackComparator
   # Initialize the LLM model (adjust according to langchainrb documentation)
   GOOGLE_API_KEY = ENV['GOOGLE_API_KEY']
   LLM = Langchain::LLM::GoogleGemini.new(
-        api_key: "AIzaSyDe3fdegsgMONd0k1V-XbQ3KDAWF6g21Vc",
+        api_key: GOOGLE_API_KEY,
         default_options: { temperature: 0.6,
                            chat_completion_model_name: 'gemini-1.5-flash-8b',
                            embeddings_model_name: 'text-embedding-004' }

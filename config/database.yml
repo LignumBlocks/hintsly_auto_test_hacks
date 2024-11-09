@@ -1,0 +1,12 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  username: hintsly
+  password: sqvZ1FbTfp1aJaT
+  host: 54.227.23.161
+  port: 5432
+  database: hintsly_production
+
+development:
+  <<: *default

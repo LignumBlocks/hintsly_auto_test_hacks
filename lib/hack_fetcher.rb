@@ -18,7 +18,7 @@ module HackFetcher
     # Assuming the table is named 'hacks' and has a 'channel_id' column
     # sanitized_ids = channel_ids.map(&:to_i).join(',')
     hacks_query = <<-SQL
-      SELECT hacks.*, videos.channel_id, videos.id AS video_id
+      SELECT hacks.*, videos.channel_id, videos.text AS file_name, videos.id AS video_id
       FROM hacks
       JOIN videos ON hacks.video_id = videos.id
       WHERE videos.channel_id = #{channel_id};
@@ -31,7 +31,8 @@ module HackFetcher
     # Extract hack_ids and video_ids
     hack_ids = hacks.map { |hack| hack['id'].to_i }.join(',')
     video_ids = hacks.map { |hack| hack['video_id'].to_i }.uniq.join(',')
- 
+    # video_files = hacks.map { |hack| hack['file_name'] }
+    # puts video_files
     # Fetch hack_validations
     validations = fetch_hack_validations(conn, hack_ids)
 
@@ -42,19 +43,19 @@ module HackFetcher
     structured_infos = fetch_hack_structured_infos(conn, hack_ids)
 
     # Fetch transcription from database via Video association
-    transcriptions = fetch_transcription(conn, video_ids)
+    # transcriptions = fetch_transcription(conn, video_ids)
     
     # Combine all data
     hacks_with_related = hacks.map do |hack|
       hack_id = hack['id'].to_i
       video_id = hack['video_id'].to_i
       hack_data = hack.transform_keys(&:to_sym)
-
+      
       hack_data[:hack_validations] = validations[hack_id] || {}
       hack_data[:queries] = queries[hack_id] || []
       hack_data[:hack_structured_infos] = structured_infos[hack_id] || {}
-      hack_data[:transcription] = transcriptions[video_id]
-
+      hack_data[:transcription] = hack['file_name'] 
+      # puts hack_data[:transcription] 
       hack_data
     end
 
